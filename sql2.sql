@@ -61,13 +61,23 @@ DELETE
 FROM DELETE_CTE
 ;
 
-ALTER TABLE world_layoffs.layoffs_staging ADD row_num INT;
+CREATE TABLE layoff_staging1 LIKE layoff;
 
-SELECT *
-FROM world_layoffs.layoffs_staging
+INSERT layoff_staging1
+SELECT * FROM layoffs
 ;
 
-CREATE TABLE world_layoffs.layoffs_staging2 (
+SELECT *
+FROM layoff_staging1
+;
+
+ALTER TABLE layoff_staging1 ADD row_num INT;
+
+SELECT *
+FROM layoff_staging1
+;
+
+CREATE TABLE layoffs_staging2 (
 company text,
 `location`text,
 `industry`text,
@@ -80,7 +90,7 @@ funds_raised_millions int,
 row_num INT
 );
 
-INSERT INTO world_layoffs.layoffs_staging2
+INSERT INTO layoffs_staging2
 (company,
 location,
 industry,
@@ -104,7 +114,7 @@ funds_raised_millions,
 			PARTITION BY company, location, industry, total_laid_off,percentage_laid_off,date, stage, country, funds_raised_millions
 			) AS row_num
 	FROM 
-		world_layoffs.layoffs_staging;
+		layoff_staging;
 
 -- now that we have this we can delete rows were row_num is greater than 2
 
